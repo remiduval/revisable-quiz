@@ -19,9 +19,9 @@
 			console.log(experience.findLayersByTag("answer"));
 
 			const components = experience.findComponentsByTag("answer");
-			const layers = experience.findLayersByTag("answer");
-			console.log(`Found ${components.length} answer components`);          
-			console.log(`Found ${layers.length} answer layers`);
+			//const layers = experience.findLayersByTag("answer");
+			console.log(`Found ${components.components.length} answer components`);          
+			//console.log(`Found ${layers.length} answer layers`);
 		});
   });
 })();
