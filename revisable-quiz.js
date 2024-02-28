@@ -17,10 +17,10 @@
 			//const resultPages = {};
   
 			// Function to parse variation value from "variation:X" tag
-			function parseVariation(variationTag) {
-			  const parts = variationTag.split(":");
-			  return parseInt(parts[1]);
-			}
+			// function parseVariation(variationTag) {
+			//   const parts = variationTag.split(":");
+			//   return parseInt(parts[1]);
+			// }
   
 			// Function to update answer values on component click
 			function handleComponentClick(component) {
@@ -30,7 +30,8 @@
   
 			  if (valueTag) {
 				const answer = valueTag.slice(6); // Renamed variable
-				const variation = variationTag ? parseVariation(variationTag.slice(11)) : 0;
+				const variationPattern = /variation:[-+]?\d+$/;
+				const variation = variationTag && variationTag.match(variationPattern) ? parseInt(variationTag.slice(10), 10) : 0;
   
 				console.log(`Component clicked: ${answer} (variation: ${variation})`);
 				resultsScores[answer] = (resultsScores[answer] || 0) + variation;
