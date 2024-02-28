@@ -17,21 +17,10 @@
 			//const resultPages = {};
   
 			// Function to parse variation value from "variation:X" tag
-			function getIntegerFromVariationString(str) {
-				// Regular expression to match the pattern "variation:" followed by an optional sign and digits
-				const pattern = /variation:[-+]?\d+$/;
-			  
-				// Match the string against the pattern
-				const match = str.match(pattern);
-			  
-				// If there's a match, extract and return the integer
-				if (match) {
-				  return parseInt(match[0].slice(10), 10); // Extract substring after "variation:" and parse to integer
-				}
-			  
-				// If no match, return null
-				return 0;
-			  }
+			function parseVariation(variationTag) {
+			  const parts = variationTag.split(":");
+			  return parseInt(parts[1]);
+			}
   
 			// Function to update answer values on component click
 			function handleComponentClick(component) {
@@ -41,8 +30,7 @@
   
 			  if (valueTag) {
 				const answer = valueTag.slice(6); // Renamed variable
-				const variationPattern = /variation:[-+]?\d+$/;
-				const variation = variationTag ? getIntegerFromVariationString(variationTag) : 0;
+				const variation = variationTag ? parseVariation(variationTag.slice(11)) : 0;
   
 				console.log(`Component clicked: ${answer} (variation: ${variation})`);
 				resultsScores[answer] = (resultsScores[answer] || 0) + variation;
@@ -105,7 +93,6 @@
 				}
 			}
 			experience.on(CerosSDK.EVENTS.CLICKED, componentClickedCallback);
-
 
 		  });
 	});
