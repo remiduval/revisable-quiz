@@ -24,13 +24,13 @@
   
 			// Function to update answer values on component click
 			function handleComponentClick(component) {
-			  const tags = component.tags; // Get tags from component
-			  const valueTag = tags.find((tag) => tag.startsWith("value:")); // Find "value:" tag
-			  const variationTag = tags.find((tag) => tag.startsWith("variation:")); // Find "variation:" tag
+			  const tags = component.tags;
+			  const valueTag = tags.find((tag) => tag.startsWith("value:"));
+			  const variationTag = tags.find((tag) => tag.startsWith("variation:"));
   
 			  if (valueTag) {
-				const answer = valueTag.slice(6); // Extract answer letter from "value:X"
-				const variation = variationTag ? parseVariation(variationTag.slice(11)) : 0; // Extract variation if present
+				const answer = valueTag.slice(6);
+				const variation = variationTag ? parseVariation(variationTag.slice(11)) : 0;
   
 				console.log(`Component clicked: ${answer} (variation: ${variation})`);
 				answerValues[answer] = (answerValues[answer] || 0) + variation;
@@ -61,22 +61,22 @@
 			}
   
 			// Initialize answer values and result pages based on tags
-			const components = experience.findComponentsByTag("answer").components; // Access nested components
-			console.log("Components:");
-			console.log(components); // Output the components variable
+			const answers = experience.findComponentsByTag("answer").components;
+			console.log("Answers:");
+			console.log(answers);
   
-			components.forEach((component) => {
-			  const tags = component.tags; // Get tags from component
+			answers.forEach((answer) => {
+			  const tags = answer.tags;
   
 			  const valueTag = tags.find((tag) => tag.startsWith("value:"));
 			  if (!valueTag) {
 				console.warn(`Component missing "value:" tag for answer tracking.`);
-				return; // Skip component if "value:" tag is missing
+				return;
 			  }
   
-			  const answer = valueTag.slice(6); // Extract answer letter from "value:X"
+			  const answer = valueTag.slice(6);
 			  const variationTag = tags.find((tag) => tag.startsWith("variation:"));
-			  const variation = variationTag ? parseVariation(variationTag.slice(11)) : 0; // Extract variation if present
+			  const variation = variationTag ? parseVariation(variationTag.slice(11)) : 0;
   
 			  answerValues[answer] = (answerValues[answer] || 0) + variation;
   
@@ -86,13 +86,20 @@
 			});
   
 			// Add click event listeners to answer components
-			components.forEach((component) => {
-			  component.addEventListener("click", () => handleComponentClick(component));
+			answers.forEach((answer) => {
+			  answer.addEventListener("click", () => handleComponentClick(answer));
 			});
   
-			// Maintain components for "goto:results" element
-			const resultsComponent = experience.findComponentsByTag("goto:results")[0];
-			resultsComponent.addEventListener("click", handleResultsClick);
+			// Track clicks on all components
+			experience.on(CerosSDK.EVENTS.CLICKED, (component) => {
+			  console.log(`Component clicked: ${component.name}`);
+			  if (component.tags.includes("value:")) {
+				handleComponentClick(component);
+			  } else if (component.name === "goto:results") {
+				handleResultsClick();
+			  }
+			});
 		  });
 	});
   })();
+  
