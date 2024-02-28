@@ -24,14 +24,19 @@
   
 			// Function to update answer values on component click
 			function handleComponentClick(component) {
-			  const valueTag = component.dataset.value;
-			  const variationTag = component.dataset.variation;
+			  const tags = component.tags; // Get tags from component
+			  const valueTag = tags.find((tag) => tag.startsWith("value:")); // Find "value:" tag
+			  const variationTag = tags.find((tag) => tag.startsWith("variation:")); // Find "variation:" tag
   
-			  const answer = valueTag.slice(6); // Extract answer letter from "value:X"
-			  const variation = parseVariation(variationTag);
+			  if (valueTag) {
+				const answer = valueTag.slice(6); // Extract answer letter from "value:X"
+				const variation = variationTag ? parseVariation(variationTag.slice(11)) : 0; // Extract variation if present
   
-			  console.log(`Component clicked: ${answer} (variation: ${variation})`);
-			  answerValues[answer] = (answerValues[answer] || 0) + variation;
+				console.log(`Component clicked: ${answer} (variation: ${variation})`);
+				answerValues[answer] = (answerValues[answer] || 0) + variation;
+			  } else {
+				console.warn(`Component missing "value:" tag for answer tracking.`);
+			  }
 			}
   
 			// Function to determine the most common answer
@@ -57,17 +62,26 @@
   
 			// Initialize answer values and result pages based on tags
 			const components = experience.findComponentsByTag("answer").components; // Access nested components
-			console.log(`Found ${components.length} answer components`);
+			console.log("Components:");
+			console.log(components); // Output the components variable
+  
 			components.forEach((component) => {
-			  const valueTag = component.dataset.value;
+			  const tags = component.tags; // Get tags from component
+  
+			  const valueTag = tags.find((tag) => tag.startsWith("value:"));
+			  if (!valueTag) {
+				console.warn(`Component missing "value:" tag for answer tracking.`);
+				return; // Skip component if "value:" tag is missing
+			  }
+  
 			  const answer = valueTag.slice(6); // Extract answer letter from "value:X"
-			  const variationTag = component.dataset.variation;
-			  const variation = parseVariation(variationTag);
+			  const variationTag = tags.find((tag) => tag.startsWith("variation:"));
+			  const variation = variationTag ? parseVariation(variationTag.slice(11)) : 0; // Extract variation if present
   
 			  answerValues[answer] = (answerValues[answer] || 0) + variation;
   
-			  const resultLetter = component.dataset.variation ? component.dataset.variation.slice(-1) : answer;
-			  resultPages[`result-${resultLetter}`] = experience.findComponentsByTag("results", resultLetter)[0]; // Avoid nested components here
+			  const resultLetter = variationTag ? variationTag.slice(-1) : answer;
+			  resultPages[`result-${resultLetter}`] = experience.findComponentsByTag("results", resultLetter)[0];
 			  console.log(`Found result page for answer ${answer}: ${resultPages[`result-${resultLetter}`]}`);
 			});
   
