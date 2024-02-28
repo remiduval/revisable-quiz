@@ -22,55 +22,52 @@
 			  return parseInt(parts[1]);
 			}
   
-			// Function to update result values on component click
+			// Function to update answer values on component click
 			function handleComponentClick(component) {
 			  const tags = component.tags;
 			  const valueTag = tags.find((tag) => tag.startsWith("value:"));
 			  const variationTag = tags.find((tag) => tag.startsWith("variation:"));
   
 			  if (valueTag) {
-				const result = valueTag.slice(6); // Renamed variable
+				const answer = valueTag.slice(6); // Renamed variable
 				const variation = variationTag ? parseVariation(variationTag.slice(11)) : 0;
   
-				console.log(`Component clicked: ${result} (variation: ${variation})`);
-				resultValues[result] = (resultValues[result] || 0) + variation;
+				console.log(`Component clicked: ${answer} (variation: ${variation})`);
+				resultValues[answer] = (resultValues[answer] || 0) + variation;
 			  } else {
-				console.warn(`Component missing "value:" tag for result tracking.`);
+				console.warn(`Component missing "value:" tag for answer tracking.`);
 			  }
 			}
   
-			// Function to determine the most common result
-			function findMostCommonResult() { // Renamed function
+			// Function to determine the most common answer
+			function findMostCommonAnswer() { // Renamed function
 			  const max = Math.max(...Object.values(resultValues));
-			  const mostCommonResults = Object.keys(resultValues).filter(
-				(result) => resultValues[result] === max
+			  const mostCommonAnswers = Object.keys(resultValues).filter(
+				(answer) => resultValues[answer] === max
 			  );
-			  return mostCommonResults.length > 1 ? mostCommonResults[0] : mostCommonResults[0];
+			  return mostCommonAnswers.length > 1 ? mostCommonAnswers[0] : mostCommonAnswers[0];
 			}
   
 			// Function to handle "goto:results" click and navigate to result page
 			function handleResultsClick() {
-			  const mostCommonResult = findMostCommonResult();
-			  const resultPage = Object.keys(resultPages).find(
-				(page) => page.slice(1) === mostCommonResult
-			  );
-			  CerosSDK.navigateToPage(resultPage);
-  
-			  console.log(`Most common result: ${mostCommonResult}`);
+			  const mostCommonAnswer = findMostCommonAnswer();
+			  console.log(`Most common answer: ${mostCommonAnswer}`);
+			  const resultPage = experience.findPagesByTag(mostCommonAnswer)[0];
 			  console.log(`Navigating to result page: ${resultPage}`);
+			  experience.goToPage(resultPage);
 			}
   
-			// Initialize result values and result pages based on tags
-			const results = experience.findComponentsByTag("result").components; // Renamed variable
-			console.log("Results:");
-			console.log(results);
+			// Initialize answer values and result pages based on tags
+			const answers = experience.findComponentsByTag("answer").components; // Renamed variable
+			console.log("Answers:");
+			console.log(answers);
   
-			results.forEach((result) => {
-			  const tags = result.tags;
+			answers.forEach((answer) => {
+			  const tags = answer.tags;
   
 			  const valueTag = tags.find((tag) => tag.startsWith("value:"));
 			  if (!valueTag) {
-				console.warn(`Component missing "value:" tag for result tracking.`);
+				console.warn(`Component missing "value:" tag for answer tracking.`);
 				return;
 			  }
   
@@ -78,16 +75,16 @@
 			  const variationTag = tags.find((tag) => tag.startsWith("variation:"));
 			  const variation = variationTag ? parseVariation(variationTag.slice(11)) : 0;
   
-			  resultValues[result] = (resultValues[result] || 0) + variation;
+			  resultValues[result] = (resultValues[answer] || 0) + variation;
   
 			  const resultLetter = variationTag ? variationTag.slice(-1) : result;
 			  resultPages[`result-${resultLetter}`] = experience.findComponentsByTag("results", resultLetter)[0];
-			  console.log(`Found result page for result ${result}: ${resultPages[`result-${resultLetter}`]}`);
+			  console.log(`Found result page for answer ${answer}: ${resultPages[`result-${resultLetter}`]}`);
 			});
   
-			// Add click event listeners to result components
-			results.forEach((result) => {
-			  result.addEventListener("click", () => handleComponentClick(result));
+			// Add click event listeners to answer components
+			answers.forEach((answer) => {
+			  answer.addEventListener("click", () => handleComponentClick(answer));
 			});
   
 			// Track clicks on all components
@@ -98,7 +95,7 @@
 			  } else if (component.name === "goto:results") {
 				handleResultsClick();
 			  }
-			});  
+			});
 		  });
 	});
   })();
