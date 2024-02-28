@@ -5,7 +5,6 @@
   require.config({
     paths: {
       CerosSDK: "//sdk.ceros.com/standalone-player-sdk-v5.min",
-      
     },
   });
 
@@ -16,8 +15,8 @@
         })
         .done(function(experience) {
           console.log("hi");
-console.log(experience.findLayersByTag("answer"));
-const layers = experience.findLayersByTag("answer");
+console.log(experience.findComponentsByTag("answer"));
+const layers = experience.findComponentsByTag("answer");
           console.log(`Found ${layers.length} answer layers`);
         });
   });
