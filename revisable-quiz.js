@@ -1,10 +1,11 @@
-<script>
+
 (function() {
   'use strict';
 
   require.config({
     paths: {
       CerosSDK: "//sdk.ceros.com/standalone-player-sdk-v5.min",
+      
     },
   });
 
@@ -21,4 +22,4 @@ const layers = experience.findLayersByTag("answer");
         });
   });
 })();
-</script>
+
