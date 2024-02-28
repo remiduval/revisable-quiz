@@ -13,7 +13,7 @@
 			  console.error("Error finding Ceros experience:", error);
 		  })
 		  .done(function(experience) {
-			const answerValues = {};
+			const resultValues = {}; // Renamed variable
 			const resultPages = {};
   
 			// Function to parse variation value from "variation:X" tag
@@ -22,72 +22,72 @@
 			  return parseInt(parts[1]);
 			}
   
-			// Function to update answer values on component click
+			// Function to update result values on component click
 			function handleComponentClick(component) {
 			  const tags = component.tags;
 			  const valueTag = tags.find((tag) => tag.startsWith("value:"));
 			  const variationTag = tags.find((tag) => tag.startsWith("variation:"));
   
 			  if (valueTag) {
-				const answer = valueTag.slice(6);
+				const result = valueTag.slice(6); // Renamed variable
 				const variation = variationTag ? parseVariation(variationTag.slice(11)) : 0;
   
-				console.log(`Component clicked: ${answer} (variation: ${variation})`);
-				answerValues[answer] = (answerValues[answer] || 0) + variation;
+				console.log(`Component clicked: ${result} (variation: ${variation})`);
+				resultValues[result] = (resultValues[result] || 0) + variation;
 			  } else {
-				console.warn(`Component missing "value:" tag for answer tracking.`);
+				console.warn(`Component missing "value:" tag for result tracking.`);
 			  }
 			}
   
-			// Function to determine the most common answer
-			function findMostCommonAnswer() {
-			  const max = Math.max(...Object.values(answerValues));
-			  const mostCommonAnswers = Object.keys(answerValues).filter(
-				(answer) => answerValues[answer] === max
+			// Function to determine the most common result
+			function findMostCommonResult() { // Renamed function
+			  const max = Math.max(...Object.values(resultValues));
+			  const mostCommonResults = Object.keys(resultValues).filter(
+				(result) => resultValues[result] === max
 			  );
-			  return mostCommonAnswers.length > 1 ? mostCommonAnswers[0] : mostCommonAnswers[0];
+			  return mostCommonResults.length > 1 ? mostCommonResults[0] : mostCommonResults[0];
 			}
   
 			// Function to handle "goto:results" click and navigate to result page
 			function handleResultsClick() {
-			  const mostCommonAnswer = findMostCommonAnswer();
+			  const mostCommonResult = findMostCommonResult();
 			  const resultPage = Object.keys(resultPages).find(
-				(page) => page.slice(1) === mostCommonAnswer
+				(page) => page.slice(1) === mostCommonResult
 			  );
 			  CerosSDK.navigateToPage(resultPage);
   
-			  console.log(`Most common answer: ${mostCommonAnswer}`);
+			  console.log(`Most common result: ${mostCommonResult}`);
 			  console.log(`Navigating to result page: ${resultPage}`);
 			}
   
-			// Initialize answer values and result pages based on tags
-			const answers = experience.findComponentsByTag("answer").components;
-			console.log("Answers:");
-			console.log(answers);
+			// Initialize result values and result pages based on tags
+			const results = experience.findComponentsByTag("result").components; // Renamed variable
+			console.log("Results:");
+			console.log(results);
   
-			answers.forEach((answer) => {
-			  const tags = answer.tags;
+			results.forEach((result) => {
+			  const tags = result.tags;
   
 			  const valueTag = tags.find((tag) => tag.startsWith("value:"));
 			  if (!valueTag) {
-				console.warn(`Component missing "value:" tag for answer tracking.`);
+				console.warn(`Component missing "value:" tag for result tracking.`);
 				return;
 			  }
   
-			  const answer = valueTag.slice(6);
+			  const result = valueTag.slice(6); // Renamed variable
 			  const variationTag = tags.find((tag) => tag.startsWith("variation:"));
 			  const variation = variationTag ? parseVariation(variationTag.slice(11)) : 0;
   
-			  answerValues[answer] = (answerValues[answer] || 0) + variation;
+			  resultValues[result] = (resultValues[result] || 0) + variation;
   
-			  const resultLetter = variationTag ? variationTag.slice(-1) : answer;
+			  const resultLetter = variationTag ? variationTag.slice(-1) : result;
 			  resultPages[`result-${resultLetter}`] = experience.findComponentsByTag("results", resultLetter)[0];
-			  console.log(`Found result page for answer ${answer}: ${resultPages[`result-${resultLetter}`]}`);
+			  console.log(`Found result page for result ${result}: ${resultPages[`result-${resultLetter}`]}`);
 			});
   
-			// Add click event listeners to answer components
-			answers.forEach((answer) => {
-			  answer.addEventListener("click", () => handleComponentClick(answer));
+			// Add click event listeners to result components
+			results.forEach((result) => {
+			  result.addEventListener("click", () => handleComponentClick(result));
 			});
   
 			// Track clicks on all components
@@ -98,7 +98,7 @@
 			  } else if (component.name === "goto:results") {
 				handleResultsClick();
 			  }
-			});
+			});  
 		  });
 	});
   })();
