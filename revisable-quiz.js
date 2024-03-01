@@ -30,7 +30,7 @@
   
 			  if (valueTag) {
 				const answer = valueTag.slice(6); // Renamed variable
-				const variation = variationTag ? parseVariation(variationTag.slice(11)) : 0;
+				const variation = variationTag ? parseInt(variationTag.slice(10)) : 0;
   
 				console.log(`Component clicked: ${answer} (variation: ${variation})`);
 				resultsScores[answer] = (resultsScores[answer] || 0) + variation;
