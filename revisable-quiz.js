@@ -43,11 +43,21 @@
   
 			// Function to determine the most common answer
 			function findMostCommonAnswer() { // Renamed function
-			  const max = Math.max(...Object.values(resultsScores));
-			  const mostCommonAnswers = Object.keys(resultsScores).filter(
-				(answer) => resultsScores[answer] === max
-			  );
-			  return mostCommonAnswers.length > 1 ? mostCommonAnswers[0] : mostCommonAnswers[0];
+				// Filter out non-numeric values (NaN or anything not a number)
+				const filteredScores = Object.fromEntries(
+					Object.entries(resultsScores).filter(([key, value]) => typeof value === "number")
+				);
+				
+				// Find the maximum score using Math.max and spread syntax
+				const highestScore = Math.max(...Object.values(filteredScores));
+				
+				// Find the first letter with the highest score (using find)
+				const highestLetter = Object.keys(filteredScores).find(
+					(letter) => filteredScores[letter] === highestScore
+				);
+				
+				// Return the letter or null if no valid scores exist
+				return highestLetter || null;
 			}
   
 			// Function to handle "goto:results" click and navigate to result page
