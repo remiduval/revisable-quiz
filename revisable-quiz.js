@@ -34,6 +34,8 @@
   
 				console.log(`Component clicked: ${answer} (variation: ${variation})`);
 				resultsScores[answer] = (resultsScores[answer] || 0) + variation;
+
+				console.log(resultsScores);
 			  } else {
 				console.warn(`Component missing "value:" tag for answer tracking.`);
 			  }
