@@ -47,14 +47,20 @@
 				const filteredScores = Object.fromEntries(
 					Object.entries(resultsScores).filter(([key, value]) => typeof value === "number")
 				);
+
+				console.log(filteredScores);
 				
 				// Find the maximum score using Math.max and spread syntax
 				const highestScore = Math.max(...Object.values(filteredScores));
+
+				console.log(highestScore);
 				
 				// Find the first letter with the highest score (using find)
 				const highestLetter = Object.keys(filteredScores).find(
 					(letter) => filteredScores[letter] === highestScore
 				);
+
+				console.log(highestLetter);
 				
 				// Return the letter or null if no valid scores exist
 				return highestLetter || null;
